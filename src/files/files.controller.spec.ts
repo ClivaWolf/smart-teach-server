@@ -17,4 +17,16 @@ describe('FilesController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
+
+  describe('upload', () => {
+    it('should be defined', () => {
+      expect(controller.create).toBeDefined();
+    });
+  });
+
+  describe('findAll', () => {
+    it('should be defined', () => {
+      expect(controller.findAll).toBeDefined();
+    });
+  });
 });
