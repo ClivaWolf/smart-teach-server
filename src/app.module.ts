@@ -5,30 +5,25 @@ import { FilesModule } from './files/files.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
+import { TypeOrmConfig } from './type-orm.config';
+import { DatabaseModule } from './database.module';
 
 @Module({
-  imports: [FilesModule,
+  imports: [
+    FilesModule,
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get('DB_HOST'),
-        port: configService.get('DB_PORT'),
-        username: configService.get('DB_USER'),
-        password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_NAME'),
-        autoLoadEntities: true,
-        synchronize: true,
-        //src\user\entities\user.entity.ts
-        //src\theme\entities\theme.entity.ts
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      }),
-      inject: [ConfigService],
+      imports: [ConfigModule, DatabaseModule], // Указываем DatabaseModule в imports
+      useFactory: async (configService: ConfigService, typeOrmConfig: TypeOrmConfig) => {
+        return typeOrmConfig.createConnectionOptions();
+      },
+      inject: [ConfigService, TypeOrmConfig],
     }),
+    UsersModule,
+    DatabaseModule,
     UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
