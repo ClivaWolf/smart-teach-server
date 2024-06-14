@@ -2,8 +2,10 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { TestResService } from './test-res.service';
 import { CreateTestReDto } from './dto/create-test-re.dto';
 import { UpdateTestReDto } from './dto/update-test-re.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('test-res')
+@ApiTags('test-res')
 export class TestResController {
   constructor(private readonly testResService: TestResService) {}
 
