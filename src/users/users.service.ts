@@ -24,6 +24,10 @@ export class UsersService {
     return this.repository.findOneBy({ login });
   }
 
+  async findAll() {
+    return this.repository.find();
+  }
+
   create(createUserDto: CreateUserDto) {
     return this.repository.save(createUserDto);
   }
