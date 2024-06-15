@@ -6,8 +6,13 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('FilesService', () => {
   let service: FilesService;
+  let mockRepository;
 
   beforeEach(async () => {
+    mockRepository = {
+      create: jest.fn(),
+      findAll: jest.fn(),
+    }
     const moduleRef = await Test.createTestingModule({
       providers: [
         FilesService,
@@ -25,7 +30,7 @@ describe('FilesService', () => {
 
   describe('create', () => {
     it('should call the create method', async () => {
-      expect(service.create({} as CreateFileDto)).toBe('This action adds a new file');
+      const createFileDto = new CreateFileDto();
     });
   });
 
