@@ -1,6 +1,7 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -15,11 +16,21 @@ export class AuthService {
   ): Promise<{ access_token: string }> {
     const user = await this.usersService.findByLogin(login);
     if (user?.password !== pass) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Неверный логин или пароль');
     }
     const payload = { sub: user.id, username: user.login };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
+  }
+
+  async register(user: CreateUserDto) {
+    try {
+      return this.usersService.create(user);
+    }
+    catch (e) {
+      console.log(e);
+      throw new ForbiddenException('ошибка регистрации');
+    }
   }
 }
