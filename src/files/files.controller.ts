@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Upl
 import { FilesService } from './files.service';
 import { CreateFileDto } from './dto/create-file.dto';
 import { UpdateFileDto } from './dto/update-file.dto';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { fileStorage } from './storage';
 
@@ -12,6 +12,7 @@ export class FilesController {
   constructor(private readonly filesService: FilesService) { }
 
   @Get()
+  @ApiOperation({ summary: 'Get all files', description: 'method for get all files', deprecated: true })
   findAll() {
     return this.filesService.findAll();
   }
@@ -30,6 +31,7 @@ export class FilesController {
       },
     }
   })
+  @ApiOperation({ summary: 'Upload file', description: 'method for upload file' })
   create(@UploadedFile() file: Express.Multer.File) {
     return file
   }
