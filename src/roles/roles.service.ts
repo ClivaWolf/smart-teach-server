@@ -11,11 +11,13 @@ export class RolesService {
     @InjectRepository(RoleEntity)
     private repository: Repository<RoleEntity>,
   ) { }
-  create(createRoleDto: CreateRoleDto) {
-    return this.repository.save(createRoleDto);
+  async create(createRoleDto: CreateRoleDto) {
+    const role = await this.repository.save(createRoleDto);
+    return role
   }
 
-  getRoleByValue(value: string) {
-    return this.repository.findOneBy({ value });
+  async getRoleByValue(value: string) {
+    const role = await this.repository.findOneBy({ value });
+    return role
   }
 }
