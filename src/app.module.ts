@@ -8,6 +8,7 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmConfig } from './type-orm.config';
 import { DatabaseModule } from './database.module';
 import { AuthModule } from './auth/auth.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AuthModule } from './auth/auth.module';
     DatabaseModule,
     UsersModule,
     AuthModule,
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
