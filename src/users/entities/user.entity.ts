@@ -15,7 +15,8 @@ export class UserEntity {
     @Column()
     password: string;
 
-    @ManyToMany(() => RoleEntity)
+    //only id
+    @ManyToMany(() => RoleEntity, role => role.users, { cascade: true })
     @JoinTable()
     roles: RoleEntity[];
 }

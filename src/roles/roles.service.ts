@@ -16,7 +16,7 @@ export class RolesService {
     return role
   }
 
-  async getRoleByValue(value: string) {
+  async getRoleByValue(value: string): Promise<RoleEntity> {
     const role = await this.repository.findOneBy({ value });
     return role
   }

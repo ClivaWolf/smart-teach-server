@@ -11,6 +11,7 @@ export class RoleEntity {
 
     @Column()
     description: string;
-
-    
+   
+    @ManyToMany(() => UserEntity, user => user.roles)
+    users: UserEntity[];
 }
