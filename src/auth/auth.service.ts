@@ -18,19 +18,20 @@ export class AuthService {
     if (user?.password !== pass) {
       throw new UnauthorizedException('Неверный логин или пароль');
     }
-    const payload = { sub: user.id, username: user.login };
+    const payload = { sub: user.id, login: user.login };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
   }
 
   async register(user: CreateUserDto) {
-    try {
-      return this.usersService.create(user);
+    const newUser = await this.usersService.create(user);
+    if (!newUser) {
+      throw new ForbiddenException('Такой пользователь уже существует');
     }
-    catch (e) {
-      console.log(e);
-      throw new ForbiddenException('ошибка регистрации');
-    }
+    const payload = { sub: newUser.id, login: newUser.login };
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+    };
   }
 }
