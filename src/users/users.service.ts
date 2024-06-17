@@ -15,7 +15,7 @@ export class UsersService {
   ) { }
 
   async findByEmail(email: string) {
-    return this.repository.findOneBy({ email });
+    return this.repository.findOne({ where: { email } });
   }
 
   async findById(id: string) {

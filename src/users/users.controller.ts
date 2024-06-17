@@ -48,6 +48,5 @@ export class UsersController {
   @ApiBearerAuth()
   getMe(@UserId() id: string) {
     return this.usersService.findById(id);
-    // console.log(id)
   }
 }
