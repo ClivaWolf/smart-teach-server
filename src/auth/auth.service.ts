@@ -32,7 +32,6 @@ export class AuthService {
 
   async generateToken(user: UserEntity): Promise<{ access_token: string }> {
     const payload = { sub: user.id, login: user.login, roles: user.roles };
-    console.log(payload)
     return {
       access_token: await this.jwtService.signAsync(payload),
     };

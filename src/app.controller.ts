@@ -17,18 +17,18 @@ export class AppController {
   @Get('/for-admin')
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
-  @ApiOperation({ summary: 'Get hello for admin' })
+  @ApiOperation({ summary: 'Get hello for admin', description: 'method for get hello for admin, need ADMIN role' })
   @ApiBearerAuth()
   getHelloForAdmin(): string {
-    return 'Hello for admin';
+    return 'Hello for admin role';
   }
 
   @Get('/for-user')
   @Roles('USER')
   @UseGuards(RolesGuard)
-  @ApiOperation({ summary: 'Get hello for user' })
+  @ApiOperation({ summary: 'Get hello for user', description: 'method for get hello for user, need USER role' })
   @ApiBearerAuth()
   getHelloForUser(): string {
-    return 'Hello for admin';
+    return 'Hello for user role';
   }
 }
