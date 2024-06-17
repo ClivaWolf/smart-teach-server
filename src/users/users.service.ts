@@ -28,7 +28,12 @@ export class UsersService {
   }
 
   async findByLogin(login: string) {
-    return this.repository.findOneBy({ login });
+    //find by id and include all relations
+    const user = await this.repository.findOne({
+      where: {login: login},
+      relations: ['roles'],
+    })
+    return user;
   }
 
   async findAll() {
