@@ -15,27 +15,48 @@ export class UsersService {
   ) { }
 
   async findByEmail(email: string) {
-    return this.repository.findOne({ where: { email } });
+    const user = await this.repository.findOne({
+      where: { email },
+      relations: ['roles']
+    });
+
+    if (!user) {
+      throw new HttpException('Пользователь с таким email не существует', 400);
+    }
+    return user
   }
 
   async findById(id: string) {
     const user = await this.repository.findOne({
-      where: {id: id},
+      where: { id: id },
       relations: ['roles'],
     })
+
+    if (!user) {
+      throw new HttpException('Пользователь с таким id не существует', 400);
+    }
     return user;
   }
 
   async findByLogin(login: string) {
     const user = await this.repository.findOne({
-      where: {login: login},
+      where: { login: login },
       relations: ['roles'],
     })
+
+    if (!user) {
+      throw new HttpException('Пользователь с таким именем не существует', 400);
+    }
     return user;
   }
 
   async findAll() {
-    return this.repository.find();
+    const users = await this.repository.find();
+
+    if (!users) {
+      throw new HttpException('Пользователей не существует', 400);
+    }
+    return users
   }
 
   async create(createUserDto: CreateUserDto) {
