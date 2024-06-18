@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { RolesGuard } from './auth/guards/roles.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 
