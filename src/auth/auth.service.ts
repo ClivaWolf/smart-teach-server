@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../resources/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/resources/users/dto/create-user.dto';
@@ -25,9 +25,13 @@ export class AuthService {
   async register(user: CreateUserDto): Promise<{ access_token: string }> {
     const newUser: UserEntity = await this.usersService.create(user);
     if (!newUser) {
-      throw new ForbiddenException('Такой пользователь уже существует');
+      throw new HttpException('Пользователь не создан', 400);
     }
-    return await this.generateToken(newUser)
+    const token = this.generateToken(newUser)
+    if (!token) {
+      throw new ForbiddenException('Не удалось создать токен');
+    }
+    return token
   }
 
   async generateToken(user: UserEntity): Promise<{ access_token: string }> {
