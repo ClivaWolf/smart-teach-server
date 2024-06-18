@@ -4,7 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
-import { RolesService } from 'src/roles/roles.service';
+import { RolesService } from 'src/resources/roles/roles.service';
 
 @Injectable()
 export class UsersService {

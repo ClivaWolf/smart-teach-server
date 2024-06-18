@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString, Matches } from "class-validator";
-import { CreateRoleDto } from "src/roles/dto/create-role.dto";
+import { CreateRoleDto } from "src/resources/roles/dto/create-role.dto";
 
 const randomLogin = () =>{
     let login = 'User-'
