@@ -39,7 +39,9 @@ export class RolesGuard implements CanActivate {
 
             const user = this.jwtService.verify(token, { secret: jwtConstants.secret });
             request.user = user;
-            // console.log(user)
+            if (!user) {
+                throw new UnauthorizedException({ message: 'Нет доступа' })
+            }
             return user.roles.some(role => requredRoles.includes(role.value));
         } catch (e) {
             throw new HttpException('Нет доступа', 403)

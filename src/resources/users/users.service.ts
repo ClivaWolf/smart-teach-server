@@ -5,6 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { RolesService } from 'src/resources/roles/roles.service';
+import { UUID } from 'typeorm/driver/mongodb/bson.typings';
+import { isUUID } from 'class-validator';
 
 @Injectable()
 export class UsersService {
@@ -27,6 +29,9 @@ export class UsersService {
   }
 
   async findById(id: string) {
+    if (!id||!isUUID(id)) {
+      throw new HttpException('Неверный id', 400);
+    }
     const user = await this.repository.findOne({
       where: { id: id },
       relations: ['roles'],
@@ -60,19 +65,30 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto) {
-    const alreadyExist = await this.findByLogin(createUserDto.login);
-    if (alreadyExist) {
-      throw new HttpException('Пользователь с таким именем уже существует', 400);
-    }
-
-    const alreadyExistEmail = await this.findByEmail(createUserDto.email);
-    if (alreadyExistEmail) {
-      throw new HttpException('Пользователь с таким email уже существует', 400);
-    }
+    await this.loginAlreadyExist(createUserDto.login);
+    await this.emailAlreadyExist(createUserDto.email);
 
     const user = await this.repository.create(createUserDto);
     const role = await this.roleService.getRoleByValue('USER');
     user.roles = [role];
     return this.repository.save(user);
+  }
+
+  private async loginAlreadyExist(login: string) {
+    const user = await this.repository.findOne({
+      where: { login: login }
+    })
+    if (user) {
+      throw new HttpException('Пользователь с таким именем уже существует', 400);
+    }
+  }
+
+  private async emailAlreadyExist(email: string) {
+    const user = await this.repository.findOne({
+      where: { email: email }
+    })
+    if (user) {
+      throw new HttpException('Пользователь с таким email уже существует', 400);
+    }
   }
 }

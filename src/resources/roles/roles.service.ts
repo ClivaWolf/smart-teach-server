@@ -24,6 +24,7 @@ export class RolesService {
   }
 
   async getRoleByValue(value: string): Promise<RoleEntity> {
+    value = value.toUpperCase();
     const role = await this.repository.findOneBy({ value });
     if (!role) {
       throw new HttpException('Роль не найдена', 400);
