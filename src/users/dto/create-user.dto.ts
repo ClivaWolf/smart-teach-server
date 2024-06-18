@@ -3,15 +3,18 @@ import { IsNotEmpty, IsString, Matches } from "class-validator";
 import { CreateRoleDto } from "src/roles/dto/create-role.dto";
 
 export class CreateUserDto {
+    
     @ApiProperty({ example: 'John', description: 'Login' })
     @IsString({ message: 'login must be a string' })
     @IsNotEmpty({ message: 'login must not be empty' })
     readonly login: string;
+
     @ApiProperty({ example: 'a@a.ru', description: 'Email' })
     @IsString({ message: 'email must be a string' })
     @IsNotEmpty({ message: 'email must not be empty' })
     @Matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, { message: 'email is not valid' })
     readonly email: string;
+
     @ApiProperty({ example: '12345', description: 'Password' })
     @IsString({ message: 'password must be a string' })
     @IsNotEmpty({ message: 'password must not be empty' })
