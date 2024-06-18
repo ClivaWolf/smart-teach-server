@@ -19,7 +19,6 @@ export class UsersService {
   }
 
   async findById(id: string) {
-    //find by id and include all relations
     const user = await this.repository.findOne({
       where: {id: id},
       relations: ['roles'],
@@ -28,7 +27,6 @@ export class UsersService {
   }
 
   async findByLogin(login: string) {
-    //find by id and include all relations
     const user = await this.repository.findOne({
       where: {login: login},
       relations: ['roles'],
