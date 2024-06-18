@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -39,6 +39,16 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto) {
+    const alreadyExist = await this.findByLogin(createUserDto.login);
+    if (alreadyExist) {
+      throw new HttpException('Пользователь с таким именем уже существует', 400);
+    }
+
+    const alreadyExistEmail = await this.findByEmail(createUserDto.email);
+    if (alreadyExistEmail) {
+      throw new HttpException('Пользователь с таким email уже существует', 400);
+    }
+
     const user = await this.repository.create(createUserDto);
     const role = await this.roleService.getRoleByValue('USER');
     user.roles = [role];
