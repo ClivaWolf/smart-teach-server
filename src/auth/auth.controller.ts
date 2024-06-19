@@ -14,6 +14,7 @@ export class AuthController {
   })
   @ApiOperation({ summary: 'Login', description: 'method for sign in by login and password' })
   @Post('login')
+  //TODO: rename
   signIn(@Body() signInDto: Record<string, any>) {
     return this.authService.signIn(signInDto.login, signInDto.password);
   }

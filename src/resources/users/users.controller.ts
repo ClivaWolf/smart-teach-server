@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Logger } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Logger, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -18,10 +18,17 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
   
-  @Get()
-  @ApiOperation({ summary: 'Get all users', description: 'method for get all users' })
+  @Get('/v0')
+  @ApiOperation({ summary: 'Get all users', description: 'method for get all users', deprecated: true })
   findAll() {
-    return this.usersService.findAll();
+    return this.usersService.findAllDeprecated();
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Get array of users by page and limit', description: 'method for get array of users' })
+  @ApiProperty({ example: { items: [], total: 0 }, description: 'Array of users' })
+  async getUsers(@Query('page') page: number, @Query('limit') limit: number) {
+    return await this.usersService.findAll(page, limit);
   }
 
   @Get('id/:id')

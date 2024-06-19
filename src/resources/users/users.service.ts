@@ -55,13 +55,30 @@ export class UsersService {
     return user;
   }
 
-  async findAll() {
+  async findAllDeprecated() {
     const users = await this.repository.find();
 
     if (!users) {
       throw new HttpException('Пользователей не существует', 400);
     }
     return users
+  }
+
+  async findAll(page: number, limit: number): Promise<{ items: UserEntity[], total: number }> {
+    if (page < 1 || limit < 1) {
+      throw new HttpException('Неверные параметры', 400);
+    }
+    if (limit > 25) {
+      limit = 25
+    }
+    
+    const skip = (page - 1) * limit;
+    const users = await this.repository.findAndCount({
+      take: limit,
+      skip,
+      relations: ['roles'], // Укажите здесь другие отношения, если они есть
+    });
+    return { items: users[0], total: users[1] };
   }
 
   async create(createUserDto: CreateUserDto) {
