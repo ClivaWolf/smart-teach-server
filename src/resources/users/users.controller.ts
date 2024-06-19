@@ -56,4 +56,13 @@ export class UsersController {
   getMe(@UserId() id: string) {
     return this.usersService.findById(id);
   }
+
+  @Get('/check-field')
+  @ApiOperation({ summary: 'Check field', description: 'method for check field' })
+
+  checkField(
+    @Query('field') field: string, 
+    @Query('value') value: string) {
+    return this.usersService.fieldAlreadyExist(field, value);
+  }
 }

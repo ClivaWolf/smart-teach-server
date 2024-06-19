@@ -50,7 +50,7 @@ export class UsersService {
     })
 
     if (!user) {
-      throw new HttpException('Пользователь с таким именем не существует', 400);
+      throw new HttpException('Пользователя с таким логином не существует', 400);
     }
     return user;
   }
@@ -96,7 +96,7 @@ export class UsersService {
       where: { login: login }
     })
     if (user) {
-      throw new HttpException('Пользователь с таким именем уже существует', 400);
+      throw new HttpException('Пользователь с таким логином уже существует', 400);
     }
   }
 
@@ -107,5 +107,15 @@ export class UsersService {
     if (user) {
       throw new HttpException('Пользователь с таким email уже существует', 400);
     }
+  }
+
+  async fieldAlreadyExist(field: string, value: string) {
+    const user = await this.repository.findOne({
+      where: { [field]: value }
+    })
+    if (user) {
+      throw new HttpException('Пользователь с таким значением поля уже существует', 400);
+    }
+    return `${field} is available`
   }
 }
