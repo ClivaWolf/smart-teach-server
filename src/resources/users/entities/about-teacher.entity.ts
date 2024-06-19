@@ -1,8 +1,14 @@
-import { ChildEntity, Column } from "typeorm";
-import { AboutUserEntity } from "./about-user.entity";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { UserEntity } from "./user.entity";
 
-@ChildEntity()
-export class AboutTeacherEntity extends AboutUserEntity {
+@Entity()
+export class AboutTeacherEntity{
+    @PrimaryGeneratedColumn('uuid')
+    id: string
+
+    @OneToOne(() => UserEntity)
+    user: UserEntity
+
     @Column()
     school: string
 

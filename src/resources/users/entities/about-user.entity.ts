@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { UserEntity } from "./user.entity";
 
 enum visibility {
     everyone = 'everyone',
@@ -6,10 +7,13 @@ enum visibility {
     hidden = 'hidden'
 }
 
-@Entity('')
+@Entity()
 export class AboutUserEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string
+
+    @OneToOne(() => UserEntity)
+    user: UserEntity
 
     @Column()
     name: string
