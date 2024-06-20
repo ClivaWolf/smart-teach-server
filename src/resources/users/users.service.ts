@@ -5,15 +5,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { RolesService } from 'src/resources/roles/roles.service';
-import { UUID } from 'typeorm/driver/mongodb/bson.typings';
 import { isUUID } from 'class-validator';
+import { CreateProfileDto, UpdateProfileDto } from './dto/update-profile.dto';
+import { AboutUserEntity } from './entities/about-user.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private repository: Repository<UserEntity>,
-    private roleService: RolesService
+    private roleService: RolesService,
+    @InjectRepository(AboutUserEntity)
+    private profileRepository: Repository<AboutUserEntity>
   ) { }
 
   async findByEmail(email: string) {
@@ -29,12 +32,12 @@ export class UsersService {
   }
 
   async findById(id: string) {
-    if (!id||!isUUID(id)) {
+    if (!id || !isUUID(id)) {
       throw new HttpException('Неверный id', 400);
     }
     const user = await this.repository.findOne({
       where: { id: id },
-      relations: ['roles'],
+      relations: ['roles', 'aboutUser'],
     })
 
     if (!user) {
@@ -71,7 +74,7 @@ export class UsersService {
     if (limit > 25) {
       limit = 25
     }
-    
+
     const skip = (page - 1) * limit;
     const users = await this.repository.findAndCount({
       take: limit,
@@ -118,4 +121,48 @@ export class UsersService {
     }
     return `${field} is available`
   }
+
+  async updateProfile(id: string, updateProfileDto: UpdateProfileDto) {
+    const user = await this.findById(id);
+    if (!user) {
+      throw new HttpException('Пользователь с таким id не существует', 404);
+    }
+
+    let aboutUser = user.aboutUser;
+    if (!aboutUser) {
+      aboutUser = await this.profileRepository.create(updateProfileDto);
+      user.aboutUser = aboutUser
+      await this.repository.save(user);
+    } else {
+      const updatedAboutUser = updateOnlyChangedFields(aboutUser, updateProfileDto);
+      await this.profileRepository.save(updatedAboutUser);
+      user.aboutUser = updatedAboutUser;
+    }
+
+    return user;
+  }
+
+  async getProfile(id: string) {
+    const user = await this.findById(id);
+    if (!user) {
+      throw new HttpException('Пользователь с таким id не существует', 404);
+    }
+    return user.aboutUser
+  }
+
+}
+
+function updateOnlyChangedFields<T>(currentEntity: T, newData: Partial<T>): T {
+  const result: Partial<T> = {};
+
+  // console.log(newData);
+  for (const key in currentEntity) {
+    if (newData.hasOwnProperty(key) && newData[key] !== undefined) {
+      result[key] = newData[key];
+    } else {
+      result[key] = currentEntity[key];
+    }
+  }
+
+  return result as T;
 }

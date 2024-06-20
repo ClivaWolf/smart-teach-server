@@ -5,6 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { JWTAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UserId } from 'src/decorators/user-id.decorator';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Controller('users')
 @ApiTags('users')
@@ -64,5 +65,22 @@ export class UsersController {
     @Query('field') field: string, 
     @Query('value') value: string) {
     return this.usersService.fieldAlreadyExist(field, value);
+  }
+
+  @Patch('/update-profile')
+  @UseGuards(JWTAuthGuard)
+  @ApiOperation({ summary: 'Update user', description: 'method for update user' })
+  @ApiBearerAuth()
+  @ApiBody({ type: UpdateProfileDto })
+  updateProfile(@UserId() id: string, @Body() UpdateProfileDto: UpdateProfileDto) {
+    return this.usersService.updateProfile(id, UpdateProfileDto);
+  }
+
+  @Get('/profile')
+  @UseGuards(JWTAuthGuard)
+  @ApiOperation({ summary: 'Get user profile', description: 'method for get user profile' })
+  @ApiBearerAuth()
+  getProfile(@UserId() id: string) {
+    return this.usersService.getProfile(id);
   }
 }

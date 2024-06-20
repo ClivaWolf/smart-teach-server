@@ -17,16 +17,15 @@ export class UserEntity {
     @Column()
     password: string;
 
-    //only id
     @ManyToMany(() => RoleEntity, role => role.users, { cascade: true })
     @JoinTable()
     roles: RoleEntity[];
 
+    @OneToOne(() => AboutUserEntity, aboutUser => aboutUser.user, {nullable: true, cascade: true})
+    @JoinColumn()
+    aboutUser?: AboutUserEntity
+    
     @OneToOne(() => AboutTeacherEntity, aboutTeacher => aboutTeacher.user, {nullable: true})
     @JoinColumn()
     aboutTeacher?: AboutTeacherEntity;
-
-    @OneToOne(() => AboutUserEntity, aboutUser => aboutUser.user, {nullable: true})
-    @JoinColumn()
-    aboutUser?: AboutUserEntity
 }

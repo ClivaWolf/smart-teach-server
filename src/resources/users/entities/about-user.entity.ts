@@ -15,20 +15,22 @@ export class AboutUserEntity {
     @OneToOne(() => UserEntity)
     user: UserEntity
 
-    @Column()
+    @Column({nullable:true})
     name: string
 
-    @Column()
+    @Column({nullable:true})
     surname: string
 
-    @Column()
+    @Column({nullable:true})
     patronymic: string
 
     @Column({nullable:true})
     city: string
 
+    @Column({nullable:true})
+    avatar: string
 
-    @Column({default: visibility.teachers})
+    @Column({default: visibility.teachers, nullable:true})
     emailVisible: visibility
 
     @Column({nullable:true})
