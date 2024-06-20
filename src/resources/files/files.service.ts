@@ -23,9 +23,10 @@ export class FilesService {
     })
   }
 
-  async create(file: Express.Multer.File, userId: string, dto: CreateFileDto) {
+  async create(file: Express.Multer.File, userId: string, login: string, dto: CreateFileDto) {
     // Определяем путь к директории для файла пользователя
-    const directoryPath = `uploads/${userId}`;
+    console.log(userId, login)
+    const directoryPath = `uploads/${login}`;
   
     // Гарантируем, что директория существует
     await fs.ensureDir(directoryPath);
@@ -33,6 +34,8 @@ export class FilesService {
     // Формируем полный путь к файлу, учитывая директорию пользователя
     const filePath = `${directoryPath}/${file.filename}`;
   
+    console.log(filePath)
+
     // Копируем файл в директорию пользователя
     await fs.copy(file.path, filePath);
   
@@ -44,6 +47,7 @@ export class FilesService {
       size: file.size,
       mimetype: file.mimetype,
       path: filePath, // Добавляем путь к файлу
+      uploadedBy: login,
       user: { id: userId }
     });
   }

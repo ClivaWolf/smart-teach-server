@@ -21,6 +21,9 @@ export class FileEntity {
     @Column({ nullable: true })
     path: string
 
+    @Column({ nullable: true })
+    uploadedBy: string
+
     @ManyToOne(() => UserEntity, (user) => user.files)
     user: UserEntity;
 
