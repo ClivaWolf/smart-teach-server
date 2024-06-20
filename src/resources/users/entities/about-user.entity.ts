@@ -25,6 +25,9 @@ export class AboutUserEntity {
     patronymic: string
 
     @Column({nullable:true})
+    birthday: Date
+
+    @Column({nullable:true})
     city: string
 
     @Column({nullable:true})
