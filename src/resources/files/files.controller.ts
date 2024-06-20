@@ -4,8 +4,10 @@ import { CreateFileDto } from './dto/create-file.dto';
 import { UpdateFileDto } from './dto/update-file.dto';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { fileStorage } from './storage';
+import {  fileStorage } from './storage';
 import { JWTAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { UserId } from 'src/decorators/user-id.decorator';
+import { UserLogin } from 'src/decorators/user-login.decorator';
 
 @Controller('files')
 @UseGuards(JWTAuthGuard)
@@ -35,7 +37,12 @@ export class FilesController {
     }
   })
   @ApiOperation({ summary: 'Upload file', description: 'method for upload file' })
-  create(@UploadedFile() file: Express.Multer.File) {
-    return file
+  create(
+    @UploadedFile() file: Express.Multer.File,
+    @UserId() userId: string,
+    @UserLogin() login: string,
+    @Body() dto: CreateFileDto
+  ) {
+    return this.filesService.create(file, userId, login, dto);
   }
 }

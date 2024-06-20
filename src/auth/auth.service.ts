@@ -11,14 +11,19 @@ export class AuthService {
     private jwtService: JwtService
   ) { }
 
-  async signIn(login: string, pass: string,): Promise<{ access_token: string }> {
-    const user = await this.usersService.findByLogin(login);
+  async signIn(login: string, password: string): Promise<{ access_token: string }> {
+    const user = login.includes('@')
+      ? await this.usersService.findByEmail(login)
+      : await this.usersService.findByLogin(login);
+
     if (!user) {
       throw new UnauthorizedException('Неверный логин или пароль, проверьте правильность ввода');
     }
-    if (user.password !== pass) {
+
+    if (user.password !== password) {
       throw new UnauthorizedException('Неверный логин или пароль');
     }
+
     return this.generateToken(user);
   }
 

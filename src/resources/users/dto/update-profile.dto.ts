@@ -1,5 +1,5 @@
 import { ApiProperty, PartialType } from "@nestjs/swagger"
-import { IsOptional, IsString } from "class-validator"
+import { IsDate, IsOptional, IsString } from "class-validator"
 
 enum visibility {
     everyone = 'everyone',
@@ -21,6 +21,11 @@ export class CreateProfileDto {
     @IsString({ message: 'patronymic must be a string' })
     @IsOptional()
     patronymic?: string
+
+    @ApiProperty({ example: '1990-01-01', description: 'Birthday' })
+    @IsDate({ message: 'birthday must be a date' })
+    @IsOptional()
+    birthday?: Date
 
     @ApiProperty({ example: 'Moscow', description: 'City' })
     @IsString({ message: 'city must be a string' })

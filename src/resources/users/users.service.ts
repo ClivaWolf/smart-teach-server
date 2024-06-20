@@ -21,7 +21,7 @@ export class UsersService {
 
   async findByEmail(email: string) {
     const user = await this.repository.findOne({
-      where: { email },
+      where: { email: email },
       relations: ['roles']
     });
 
@@ -147,7 +147,25 @@ export class UsersService {
     if (!user) {
       throw new HttpException('Пользователь с таким id не существует', 404);
     }
+    if (!user.aboutUser) {
+      throw new HttpException('Пользователь не имеет профиля', 400);
+    }
     return user.aboutUser
+  }
+
+  async getPublicProfile(login: string) {
+    const user = await this.findByLogin(login);
+    if (!user) {
+      throw new HttpException('Пользователь с таким логином не существует', 404);
+    }
+    const profile = await this.getProfile(user.id);
+    if (!profile) {
+      throw new HttpException('Пользователь не имеет профиля', 400);
+    }
+    //without emailVisible & id
+    delete profile.emailVisible
+    delete profile.id
+    return profile
   }
 
 }
