@@ -76,11 +76,17 @@ export class UsersController {
     return this.usersService.updateProfile(id, UpdateProfileDto);
   }
 
-  @Get('/profile')
+  @Get('/my-profile')
   @UseGuards(JWTAuthGuard)
   @ApiOperation({ summary: 'Get user profile', description: 'method for get user profile' })
   @ApiBearerAuth()
   getProfile(@UserId() id: string) {
     return this.usersService.getProfile(id);
+  }
+
+  @Get('/public-profile/:login')
+  @ApiOperation({ summary: 'Get public user profile', description: 'method for get public user profile' })
+  getPublicProfile(@Param('login') login: string) {
+    return this.usersService.getPublicProfile(login);
   }
 }
