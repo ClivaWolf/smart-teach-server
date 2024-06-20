@@ -6,6 +6,7 @@ import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nes
 import { FileInterceptor } from '@nestjs/platform-express';
 import { fileStorage } from './storage';
 import { JWTAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { UserId } from 'src/decorators/user-id.decorator';
 
 @Controller('files')
 @UseGuards(JWTAuthGuard)
@@ -35,7 +36,11 @@ export class FilesController {
     }
   })
   @ApiOperation({ summary: 'Upload file', description: 'method for upload file' })
-  create(@UploadedFile() file: Express.Multer.File) {
-    return file
+  create(
+    @UploadedFile() file: Express.Multer.File,
+    @UserId() userId: string,
+    @Body() dto: CreateFileDto
+  ) {
+    return this.filesService.create(file, userId, dto);
   }
 }

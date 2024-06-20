@@ -4,6 +4,7 @@ import { UpdateFileDto } from './dto/update-file.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileEntity } from './entities/file.entity';
 import { Repository } from 'typeorm';
+import * as fs from 'fs-extra';
 
 @Injectable()
 export class FilesService {
@@ -11,8 +12,40 @@ export class FilesService {
     @InjectRepository(FileEntity)
     private repository: Repository<FileEntity>,
   ) {}
-  create(createFileDto: CreateFileDto) {
-    return 'This action adds a new file';
+  createDep(file: Express.Multer.File, userId: string, dto: CreateFileDto) {
+    return this.repository.save({
+      ...dto,
+      filename: file.filename,
+      originalName: file.originalname,
+      size: file.size,
+      mimetype: file.mimetype,
+      user: { id: userId }
+    })
+  }
+
+  async create(file: Express.Multer.File, userId: string, dto: CreateFileDto) {
+    // Определяем путь к директории для файла пользователя
+    const directoryPath = `uploads/${userId}`;
+  
+    // Гарантируем, что директория существует
+    await fs.ensureDir(directoryPath);
+  
+    // Формируем полный путь к файлу, учитывая директорию пользователя
+    const filePath = `${directoryPath}/${file.filename}`;
+  
+    // Копируем файл в директорию пользователя
+    await fs.copy(file.path, filePath);
+  
+    // Сохраняем информацию о файле в базе данных
+    return this.repository.save({
+     ...dto,
+      filename: file.filename,
+      originalName: file.originalname,
+      size: file.size,
+      mimetype: file.mimetype,
+      path: filePath, // Добавляем путь к файлу
+      user: { id: userId }
+    });
   }
 
   findAll() {
