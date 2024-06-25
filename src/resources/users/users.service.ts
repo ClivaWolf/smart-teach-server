@@ -117,9 +117,9 @@ export class UsersService {
       where: { [field]: value }
     })
     if (user) {
-      throw new HttpException('Пользователь с таким значением поля уже существует', 400);
+      return true
     }
-    return `${field} is available`
+    return false
   }
 
   async updateProfile(id: string, updateProfileDto: UpdateProfileDto) {
