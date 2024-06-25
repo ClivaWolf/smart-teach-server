@@ -37,7 +37,7 @@ export class UsersService {
     }
     const user = await this.repository.findOne({
       where: { id: id },
-      relations: ['roles', 'aboutUser'],
+      relations: ['roles', 'aboutUser', 'files'],
     })
 
     if (!user) {
@@ -166,6 +166,14 @@ export class UsersService {
     delete profile.emailVisible
     delete profile.id
     return profile
+  }
+
+  async getMyFiles(id: string) {
+    const user = await this.findById(id);
+    if (!user) {
+      throw new HttpException('Пользователь с таким id не существует', 404);
+    }
+    return user.files
   }
 
 }

@@ -89,4 +89,12 @@ export class UsersController {
   getPublicProfile(@Param('login') login: string) {
     return this.usersService.getPublicProfile(login);
   }
+
+  @Get('/my-files')
+  @UseGuards(JWTAuthGuard)
+  @ApiOperation({ summary: 'Get user files', description: 'method for get user files' })
+  @ApiBearerAuth()
+  getMyFiles(@UserId() id: string) {
+    return this.usersService.getMyFiles(id);
+  }
 }
