@@ -9,7 +9,7 @@ import {
   import { Request } from 'express';
   
   @Injectable()
-  export class JWTAuthGuard implements CanActivate {
+  export class JWTRefreshGuard implements CanActivate {
     constructor(private jwtService: JwtService) {}
   
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -22,7 +22,7 @@ import {
         const payload = await this.jwtService.verifyAsync(
           token,
           {
-            secret: process.env.JWT_SECRET
+            secret: process.env.JWT_REFRESH_SECRET
           }
         );
         // 💡 We're assigning the payload to the request object here
@@ -36,6 +36,6 @@ import {
   
     private extractTokenFromHeader(request: Request): string | undefined {
       const [type, token] = request.headers.authorization?.split(' ') ?? [];
-      return type === 'Bearer' ? token : undefined;
+      return type === 'Refresh' ? token : undefined;
     }
   }

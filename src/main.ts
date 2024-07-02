@@ -18,7 +18,14 @@ async function bootstrap() {
     .setTitle('Smart teach swagger API')
     .setDescription('The smart-teach API description')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addBearerAuth(
+      {type: 'http', scheme: 'bearer', bearerFormat: 'JWT'},
+      'access-token'
+    )
+    .addBearerAuth(
+      {type: 'http', scheme: 'bearer', bearerFormat: 'JWT'},
+      'refresh-token'
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document, {

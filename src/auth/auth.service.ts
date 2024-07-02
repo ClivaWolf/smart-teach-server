@@ -12,6 +12,7 @@ export class AuthService {
   ) { }
 
   async signIn(login: string, password: string): Promise<{ access_token: string }> {
+    console.log('try signIn',login, password)
     const user = login.includes('@')
       ? await this.usersService.findByEmail(login)
       : await this.usersService.findByLogin(login);
@@ -39,10 +40,21 @@ export class AuthService {
     return token
   }
 
-  async generateToken(user: UserEntity): Promise<{ access_token: string }> {
+  async generateToken(user: UserEntity): Promise<{ access_token: string, refresh_token: string }> {
     const payload = { sub: user.id, login: user.login, roles: user.roles };
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      access_token: await this.jwtService.signAsync(payload,{
+        secret: process.env.JWT_SECRET,
+        expiresIn: '3h'
+      }),
+      refresh_token: await this.jwtService.signAsync(payload,{
+        secret: process.env.JWT_REFRESH_SECRET,
+        expiresIn: '21d'
+      })
     };
+  }
+
+  async refreshToken(user:any){
+    const token = this.generateToken(user)
   }
 }
